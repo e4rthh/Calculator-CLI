@@ -1,20 +1,96 @@
-#include <iostream>   // cin / cout
-#include <string>     // getline
-#include <stack>      // shunting-yard
-#include <sstream>    // tokenizing the input
-#include <stdexcept>  // throwing errors (div by zero etc)
-#include <math.h>
+#include <iostream>
+#include <string>
+#include <vector>
+#include <cctype>
+#include <stack>
 
-
-
-int main() {
-    std::string line;
-    while (std::getline(std::cin, line)) {
-        // parse + eval line
-        // for now just echo it back
-        std::cout << line << "\n";
-        std::cout.flush(); // important for piping
-    }
+int precedence(const std::string& op) {
+    if (op == "+" || op == "-") return 1; //order of operation so + - is lower than * /
+    if (op == "*" || op == "/") return 2;
+    return 0;
 }
 
-void std::vector<std::string> tokenize(const std::string& expr);
+bool is_operator(const std::string& t) {
+    return t == "+" || t == "-" || t == "*" || t == "/";
+}
+
+std::vector<std::string> tokenize(const std::string& expr) { //function stdvector string for outputing as a vector of string,t he const std::string& expr for const std::string it just says i wont do anything to the string and we input the variable as expr
+    std::vector<std::string> tokens;   //tokens vector string
+    std::string current;   //string for current to pop
+
+   for (char c : expr) {  //loop for charecter in expr (aka string)
+        if (std::isdigit(c)) {   //check if thats a digit
+            current += c; //put to current
+        } else {
+            if (!current.empty()) {   // if a symbol
+                tokens.push_back(current);   //push the current number to the token 
+                current.clear();  //clear the string
+            }
+
+            if (c != ' ') {      
+                tokens.push_back(std::string(1, c));   //push the symbol in 1, c stands for string of 1 charecter
+            }
+        }
+    }
+
+    if (!current.empty()) {      //for leftovers to push to tokens
+        tokens.push_back(current);
+    }
+
+    return tokens;
+}
+
+std::vector<std::string> shuting_yard(const std::vector<std::string>& tokens) {  
+    std::vector<std::string>output;      //string vector
+    std::stack<std::string>ops;         //stack
+
+    for (const auto& t : tokens) {    //checks the value but dont change anything to the actual string
+        if (std::isdigit(t[0])) {     //check if digit only 1st index is enough
+            output.push_back(t); // if digit then just go in the string
+
+        } else if (is_operator(t)) {    //check if its an opeartion now keything is we compare the 1st index of the vector that keeps the operation to a new one if old is higher we push it if not then we push the newest one
+            while (!ops.empty() && precedence(ops.top()) >= precedence(t)) {   //check if string isnt empty and check if the thing inside vector has higher value
+                output.push_back(ops.top()); //push if its higher
+                ops.pop();   //remove the first element
+            }
+            ops.push(t);   //IF NO 1ST ELEMENT FROM CHECKING PSUH IT IN
+
+        }
+    }
+    while (!ops.empty()) {
+    output.push_back(ops.top()); //push the last one
+
+    ops.pop();
+    }
+    return output;
+}
+
+double evaluvation (const std::vector<std::string>& tokens) {
+    std::stack<double> stack; //stack
+
+    for (const auto& t : tokens) {
+         if (std::isdigit(static_cast<unsigned char>(t[0]))) {    //is digit can only check for unsigned char so we just change its type to that
+            stack.push(std::stod(t));   //push to stack
+        } else {
+            double lhs = stack.top(); stack.pop();   //left hand side
+            double rhs = stack.top(); stack.pop();   //right hand side
+            double result = 0;
+            if (t == "*") result = lhs * rhs;
+            else if (t == "+") result = lhs + rhs;
+            else if (t == "-") result = lhs - rhs;
+            else if (t == "/") result = lhs / rhs;
+            stack.push(result);  // push the result so we can continue finding vlaues
+
+        }
+    }
+    return stack.top();  //return the value
+}
+
+int main() {
+    std::vector<std::string> tokens = tokenize("12 + 3 * 4");
+
+    for (const std::string& t : tokens) {
+        std::cout << t << '\n';
+    }
+    return 0;
+}
