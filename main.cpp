@@ -14,6 +14,10 @@ bool is_operator(const std::string& t) {
     return t == "+" || t == "-" || t == "*" || t == "/";
 }
 
+bool isltr(const std::string& t) {
+    if (t == "+" || t == "-" || t == "*" || t == "/") return true;
+}
+
 std::vector<std::string> tokenize(const std::string& expr) { //function stdvector string for outputing as a vector of string,t he const std::string& expr for const std::string it just says i wont do anything to the string and we input the variable as expr
     std::vector<std::string> tokens;   //tokens vector string
     std::string current;   //string for current to pop
@@ -49,13 +53,18 @@ std::vector<std::string> shuting_yard(const std::vector<std::string>& tokens) {
             output.push_back(t); // if digit then just go in the string
 
         } else if (is_operator(t)) {    //check if its an opeartion now keything is we compare the 1st index of the vector that keeps the operation to a new one if old is higher we push it if not then we push the newest one
+            if (isltr(t)) {
             while (!ops.empty() && precedence(ops.top()) >= precedence(t)) {   //check if string isnt empty and check if the thing inside vector has higher value
                 output.push_back(ops.top()); //push if its higher
                 ops.pop();   //remove the first element
+            }   
+        }   else  {
+            while (!ops.empty() && precedence(ops.top()) > precedence(t)) {
+                output.push_back(ops.top());
+                ops.pop();
             }
-            ops.push(t);   //IF NO 1ST ELEMENT FROM CHECKING PSUH IT IN
-
-        }
+            ops.push(t);
+        } 
     }
     while (!ops.empty()) {
     output.push_back(ops.top()); //push the last one
@@ -63,8 +72,8 @@ std::vector<std::string> shuting_yard(const std::vector<std::string>& tokens) {
     ops.pop();
     }
     return output;
+  }
 }
-
 double evaluvation (const std::vector<std::string>& tokens) {
     std::stack<double> stack; //stack
 
