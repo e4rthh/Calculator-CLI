@@ -3,19 +3,20 @@
 #include <vector>
 #include <cctype>
 #include <stack>
-
+#include <cmath>
 int precedence(const std::string& op) {
     if (op == "+" || op == "-") return 1; //order of operation so + - is lower than * /
     if (op == "*" || op == "/") return 2;
+    if (op == "^") return 3;
     return 0;
 }
 
 bool is_operator(const std::string& t) {
-    return t == "+" || t == "-" || t == "*" || t == "/";
+    return t == "+" || t == "-" || t == "*" || t == "/" || t == "^";
 }
 
 bool isltr(const std::string& t) {
-    if (t == "+" || t == "-" || t == "*" || t == "/") return true;
+       return t != "^";
 }
 
 std::vector<std::string> tokenize(const std::string& expr) { //function stdvector string for outputing as a vector of string,t he const std::string& expr for const std::string it just says i wont do anything to the string and we input the variable as expr
@@ -58,21 +59,22 @@ std::vector<std::string> shuting_yard(const std::vector<std::string>& tokens) {
                 output.push_back(ops.top()); //push if its higher
                 ops.pop();   //remove the first element
             }   
-        }   else  {
+            } else  {
             while (!ops.empty() && precedence(ops.top()) > precedence(t)) {
                 output.push_back(ops.top());
                 ops.pop();
+              }
             }
             ops.push(t);
-        } 
+        
     }
-    while (!ops.empty()) {
+  }
+  while (!ops.empty()) {
     output.push_back(ops.top()); //push the last one
 
     ops.pop();
     }
     return output;
-  }
 }
 double evaluvation (const std::vector<std::string>& tokens) {
     std::stack<double> stack; //stack
@@ -86,8 +88,9 @@ double evaluvation (const std::vector<std::string>& tokens) {
             double result = 0;
             if (t == "*") result = lhs * rhs;
             else if (t == "+") result = lhs + rhs;
-            else if (t == "-") result = lhs - rhs;
-            else if (t == "/") result = lhs / rhs;
+            else if (t == "-") result = rhs - lhs;
+            else if (t == "/") result = rhs / lhs;
+            else if (t == "^") result = std::pow (rhs, lhs);
             stack.push(result);  // push the result so we can continue finding vlaues
 
         }
@@ -102,7 +105,6 @@ int main() {
     std::vector<std::string> tokens = tokenize(expr);
     std::vector<std::string> shunters = shuting_yard(tokens);
     double evals = evaluvation(shunters);
-
     std::cout << evals << '\n';
 
     return 0;
