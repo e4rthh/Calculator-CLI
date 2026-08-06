@@ -121,13 +121,15 @@ double evaluvation (const std::vector<std::string>& tokens) {
 
 int main() {
     std::string expr;
-    std::getline(std::cin, expr);
 
-    std::vector<std::string> tokens = tokenize(expr);
-    std::vector<std::string> shunters = shuting_yard(tokens);
-    double evals = evaluvation(shunters);
-    std::cout << evals << '\n';
+    while (std::getline(std::cin, expr)) {
+
+        std::vector<std::string> tokens = tokenize(expr);
+        std::vector<std::string> shunters = shuting_yard(tokens);
+        double evals = evaluvation(shunters);
+
+        std::cout << evals << '\n';
+    }
 
     return 0;
-
 }
