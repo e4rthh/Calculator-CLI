@@ -87,10 +87,15 @@ double evaluvation (const std::vector<std::string>& tokens) {
 }
 
 int main() {
-    std::vector<std::string> tokens = tokenize("12 + 3 * 4");
+    std::string expr;
+    std::getline(std::cin, expr);
 
-    for (const std::string& t : tokens) {
-        std::cout << t << '\n';
-    }
+    std::vector<std::string> tokens = tokenize(expr);
+    std::vector<std::string> shunters = shuting_yard(tokens);
+    double evals = evaluvation(shunters);
+
+    std::cout << evals << '\n';
+
     return 0;
+
 }
