@@ -8,6 +8,7 @@ int precedence(const std::string& op) {
     if (op == "+" || op == "-") return 1; //order of operation so + - is lower than * /
     if (op == "*" || op == "/") return 2;
     if (op == "^") return 3;
+    if (op == "sqrt") return 4;
     return 0;
 }
 
@@ -32,12 +33,13 @@ std::vector<std::string> tokenize(const std::string& expr) { //function stdvecto
                 current.clear();  //clear the string
             }
 
-            if (c != ' ') {      
+            if (c != ' ' && c != 's' && c != 'q' && c != 'r' && c !='t') {      
                 tokens.push_back(std::string(1, c));   //push the symbol in 1, c stands for string of 1 charecter
+            } else if (c != ' ') {
+                current += c;
+            }
             }
         }
-    }
-
     if (!current.empty()) {      //for leftovers to push to tokens
         tokens.push_back(current);
     }
@@ -55,11 +57,11 @@ std::vector<std::string> shuting_yard(const std::vector<std::string>& tokens) {
         output.push_back(t);
     }
 
-    else if (t == "(") {.      //if its a ( then just go to ops
+    else if (t == "(") {      //if its a ( then just go to ops
         ops.push(t);
     }
 
-    else if (t == ")") {.       // put the stuff in parenthesses to the output
+    else if (t == ")") {       // put the stuff in parenthesses to the output
         while (!ops.empty() && ops.top() != "(") {
             output.push_back(ops.top());
             ops.pop();
@@ -68,17 +70,17 @@ std::vector<std::string> shuting_yard(const std::vector<std::string>& tokens) {
     }
 
     else if (is_operator(t)) {
-            if (isltr(t)) {.     //check if its left to right operation if it is then just loop normally
+            if (isltr(t)) {     //check if its left to right operation if it is then just loop normally
             while (!ops.empty() &&
                    ops.top() != "(" &&
-                   precedence(ops.top()) >= precedence(t)) {.      //check if its empty and if its a higher weighted operation
+                   precedence(ops.top()) >= precedence(t)) {      //check if its empty and if its a higher weighted operation
                 output.push_back(ops.top());       //if it is then push to output
                 ops.pop();             
             }
         } else { // because of ltr condition if its both expo then it just gets put into the stack 
-            while (!ops.empty() &&.  // reason being ex 2^3^4+2. the parenthesses gets push to the stack and + so both of them go to the output but the output os now 2 3 4 ^ ^ + and now its correct order instead of 2 3 ^ 2 ^
+            while (!ops.empty() &&  // reason being ex 2^3^4+2. the parenthesses gets push to the stack and + so both of them go to the output but the output os now 2 3 4 ^ ^ + and now its correct order instead of 2 3 ^ 2 ^
                    ops.top() != "(" &&
-                   precedence(ops.top()) > precedence(t)) {.         
+                   precedence(ops.top()) > precedence(t)) {         
                 output.push_back(ops.top());
                 ops.pop();
             }
