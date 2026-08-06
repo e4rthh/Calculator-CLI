@@ -49,32 +49,51 @@ std::vector<std::string> shuting_yard(const std::vector<std::string>& tokens) {
     std::vector<std::string>output;      //string vector
     std::stack<std::string>ops;         //stack
 
-    for (const auto& t : tokens) {    //checks the value but dont change anything to the actual string
-        if (std::isdigit(t[0])) {     //check if digit only 1st index is enough
-            output.push_back(t); // if digit then just go in the string
+    for (const auto& t : tokens) {
 
-        } else if (is_operator(t)) {    //check if its an opeartion now keything is we compare the 1st index of the vector that keeps the operation to a new one if old is higher we push it if not then we push the newest one
-            if (isltr(t)) {
-            while (!ops.empty() && precedence(ops.top()) >= precedence(t)) {   //check if string isnt empty and check if the thing inside vector has higher value
-                output.push_back(ops.top()); //push if its higher
-                ops.pop();   //remove the first element
-            }   
-            } else  {
-            while (!ops.empty() && precedence(ops.top()) > precedence(t)) {
+    if (std::isdigit(t[0])) {
+        output.push_back(t);
+    }
+
+    else if (t == "(") {
+        ops.push(t);
+    }
+
+    else if (t == ")") {
+        while (!ops.empty() && ops.top() != "(") {
+            output.push_back(ops.top());
+            ops.pop();
+        }
+        ops.pop();   // remove "("
+    }
+
+    else if (is_operator(t)) {
+        if (isltr(t)) {
+            while (!ops.empty() &&
+                   ops.top() != "(" &&
+                   precedence(ops.top()) >= precedence(t)) {
                 output.push_back(ops.top());
                 ops.pop();
-              }
             }
-            ops.push(t);
-        
-    }
-  }
-  while (!ops.empty()) {
-    output.push_back(ops.top()); //push the last one
+        } else {
+            while (!ops.empty() &&
+                   ops.top() != "(" &&
+                   precedence(ops.top()) > precedence(t)) {
+                output.push_back(ops.top());
+                ops.pop();
+            }
+        }
 
-    ops.pop();
+        ops.push(t);
     }
-    return output;
+}
+
+while (!ops.empty()) {
+    output.push_back(ops.top());
+    ops.pop();
+}
+
+return output;
 }
 double evaluvation (const std::vector<std::string>& tokens) {
     std::stack<double> stack; //stack
