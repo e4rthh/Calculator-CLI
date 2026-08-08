@@ -148,22 +148,18 @@ int main() {
 
             //take the JSON string that we got from Go
             //and turn it into an actual JSON object that C++ can access
-            //
             //for example:
             //line = {"id":1,"method":"eval","expr":"2+2"}
-            //
             //request["expr"] will now give us "2+2"
             json request = json::parse(line);
 
 
             //get the id from the request
             //the id is used so Go knows which request this response belongs to
-            //
             //example:
             //Go sends id 5
             //C++ does the calculation
             //C++ sends id 5 back
-            //
             //the 0 means if the request doesn't have an id,
             //just use 0 instead of crashing
             int id = request.value("id", 0);
@@ -171,10 +167,8 @@ int main() {
 
             //get the method from the JSON request
             //method tells C++ what Go wants it to do
-            //
             //right now we only have one method:
             //"eval" = evaluate the math expression
-            //
             //the "" means if there is no method, use an empty string
             std::string method = request.value("method", "");
 
@@ -189,17 +183,14 @@ int main() {
             if (method == "eval") {
 
                 //get the math expression from the JSON request
-                //
                 //example:
                 //"expr": "2+2"
-                //
                 //expr will now contain:
                 //"2+2"
                 std::string expr = request.value("expr", "");
 
 
                 //this is where the JSON RPC connects to our actual calculator
-                //
                 //we don't need to rewrite the calculator
                 //we just take the expression from the JSON
                 //and send it through the functions we already made
@@ -208,7 +199,6 @@ int main() {
                 //turn the expression into individual tokens
                 //example:
                 //"2+2"
-                //
                 //becomes:
                 //["2", "+", "2"]
                 std::vector<std::string> tokens = tokenize(expr);
@@ -216,20 +206,16 @@ int main() {
 
                 //take the normal tokens and convert them into
                 //the order that the evaluator needs
-                //
                 //example:
                 //["2", "+", "2"]
-                //
                 //becomes:
                 //["2", "2", "+"]
                 std::vector<std::string> shunters = shuting_yard(tokens);
 
 
                 //actually calculate the expression
-                //
                 //example:
                 //["2", "2", "+"]
-                //
                 //becomes:
                 //4
                 double evals = evaluvation(shunters);
@@ -241,7 +227,6 @@ int main() {
 
 
                 //put the calculated answer into the JSON response
-                //
                 //example:
                 //"result": 4
                 response["result"] = evals;
@@ -251,10 +236,8 @@ int main() {
 
                 //if the method isn't something we recognize,
                 //then we can't do what Go requested
-                //
                 //for example:
                 //"method": "banana"
-                //
                 //we don't have a banana method so we return an error
                 response["ok"] = false;
 
@@ -269,7 +252,6 @@ int main() {
             //if something goes wrong while parsing the JSON
             //or something inside the calculator throws an error,
             //the program will come here instead of immediately crashing
-            //
             //e.what() gives us the error message
             //so we can send it back to Go
             response["ok"] = false;
@@ -281,11 +263,9 @@ int main() {
 
 
         //convert the response JSON object back into a normal string
-        //
         //example:
         //response:
         //{"id":1,"ok":true,"result":4}
-        //
         //dump() converts the JSON object into text
         //so we can send it through stdout to Go
         std::cout << response.dump() << std::endl;
