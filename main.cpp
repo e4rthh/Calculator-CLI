@@ -13,7 +13,7 @@ int precedence(const std::string& op) {
 }
 
 bool is_operator(const std::string& t) {
-    return t == "+" || t == "-" || t == "*" || t == "/" || t == "^";
+    return t == "+" || t == "-" || t == "*" || t == "/" || t == "^" || t == "sqrt";
 }
 
 bool isltr(const std::string& t) {
@@ -109,6 +109,11 @@ double evaluvation (const std::vector<std::string>& tokens) {
          if (std::isdigit(static_cast<unsigned char>(t[0]))) {    //is digit can only check for unsigned char so we just change its type to that
             stack.push(std::stod(t));   //push to stack
         } else {
+            if (t == "sqrt") {
+                double lhs = stack.top(); stack.pop();
+                stack.push(std::sqrt(lhs));
+                continue;
+            }
             double lhs = stack.top(); stack.pop();   //left hand side
             double rhs = stack.top(); stack.pop();   //right hand side
             double result = 0;
@@ -127,19 +132,21 @@ double evaluvation (const std::vector<std::string>& tokens) {
 int main() {
     std::string expr;
 
-    while (std::getline(std::cin, expr)) {
-
+    while (true) {
+        std::getline(std::cin, expr);
         std::vector<std::string> tokens = tokenize(expr);
-        //std::vector<std::string> shunters = shuting_yard(tokens);
-        //double evals = evaluvation(shunters);
-        for (const auto& ele : tokens) {
+        std::vector<std::string> shunters = shuting_yard(tokens);
+        double evals = evaluvation(shunters);
+        /*for (const auto& ele : tokens) {
             std::cout << ele << " ";
-        }
+        }*/ //debugging tokens
+       //std::cout << std::endl;
+        std::cout << evals;
         std::cout << std::endl;
         //std::cout << evals << '\n';
         /*for (const auto& ele : shunters) {
             std::cout << ele << " ";
-        } */                            //use for debugging shuters
+        }*/                             //use for debugging shuters
     }
 
     return 0;
