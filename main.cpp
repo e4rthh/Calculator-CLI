@@ -4,6 +4,10 @@
 #include <cctype>
 #include <stack>
 #include <cmath>
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json; // makes nlohmann::json shorter so we can just write json
+
 int precedence(const std::string& op) {
     if (op == "+" || op == "-") return 1; //order of operation so + - is lower than * /
     if (op == "*" || op == "/") return 2; 
