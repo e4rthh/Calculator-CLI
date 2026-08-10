@@ -27,10 +27,12 @@ std::vector<std::string> tokenize(const std::string& expr) { //function stdvecto
 
     for (size_t i = 0; i < expr.size(); ) {  //loop for charecter in expr (aka string)
         char c = expr[i];  //changed to this because we can now check in the strings instead of by letters like sqrt(4) wil now be [sqrt(4)] in which we can easily check using to compare string
-        while (i < expr.size() && std::isdigit(expr[i])) {    //check numbers faster
-             current += expr[i];
-                i++;
+        if (std::isdigit(static_cast<unsigned char>(expr[i])) || expr[i] == '.') {
+            while (i < expr.size() && (std::isdigit(static_cast<unsigned char>(expr[i])) || expr[i] == '.')) {
+                    current += expr[i];
+                     i++;
             }
+        }
             if (!current.empty()) {   // if a symbol
                 tokens.push_back(current);   //push the current number to the token 
                 current.clear();
@@ -40,12 +42,13 @@ std::vector<std::string> tokenize(const std::string& expr) { //function stdvecto
                  tokens.push_back("sqrt");
                  i += 4;
                  continue;
-}
+            }
             if (c != ' ') {      
                 tokens.push_back(std::string(1, c));//push the symbol in 1, c stands for string of 1 charecter
                 i++;  
             }
         }
+    
     if (!current.empty()) {      //for leftovers to push to tokens
         tokens.push_back(current);
     }
@@ -130,14 +133,10 @@ double evaluvation (const std::vector<std::string>& tokens) {
     return stack.top();  //return the value
 }
 
-using json = nlohmann::json; // makes nlohmann::json shorter so we can just write json
 
 
 int main() {
     std::string expr;
-
-    while (std::getline(std::cin, expr)) {
-
     while (true) {
         std::getline(std::cin, expr);
         std::vector<std::string> tokens = tokenize(expr);
@@ -148,16 +147,15 @@ int main() {
         double evals = evaluvation(shunters);
         /*for (const auto& ele : tokens) {
             std::cout << ele << " ";
-        }
-        }*/ //debugging tokens
+        } *///debugging tokens
        //std::cout << std::endl;
         std::cout << evals;
         std::cout << std::endl;
         //std::cout << evals << '\n';
         /*for (const auto& ele : shunters) {
             std::cout << ele << " ";
-        } */                            //use for debugging shuters
-        }*/                             //use for debugging shuters
-
- return 0;
+        } */                            //use for debugging shuters                 s    
 }
+    return 0;
+}
+
