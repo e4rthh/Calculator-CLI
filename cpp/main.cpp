@@ -4,8 +4,6 @@
 #include <cctype>
 #include <stack>
 #include <cmath>
-#include <nlohmann/json.hpp>
-#include "calc.cpp"
 
 int precedence(const std::string& op) {
     if (op == "+" || op == "-") return 1; //order of operation so + - is lower than * /
