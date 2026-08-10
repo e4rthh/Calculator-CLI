@@ -136,6 +136,30 @@ using json = nlohmann::json; // makes nlohmann::json shorter so we can just writ
 
 
 int main() {
+    std::string expr;
 
-    return 0;
+    while (std::getline(std::cin, expr)) {
+
+    while (true) {
+        std::getline(std::cin, expr);
+        std::vector<std::string> tokens = tokenize(expr);
+        //std::vector<std::string> shunters = shuting_yard(tokens);
+        //double evals = evaluvation(shunters);
+        for (const auto& ele : tokens) {
+        std::vector<std::string> shunters = shuting_yard(tokens);
+        double evals = evaluvation(shunters);
+        /*for (const auto& ele : tokens) {
+            std::cout << ele << " ";
+        }
+        }*/ //debugging tokens
+       //std::cout << std::endl;
+        std::cout << evals;
+        std::cout << std::endl;
+        //std::cout << evals << '\n';
+        /*for (const auto& ele : shunters) {
+            std::cout << ele << " ";
+        } */                            //use for debugging shuters
+        }*/                             //use for debugging shuters
+
+ return 0;
 }
