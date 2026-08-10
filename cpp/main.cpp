@@ -7,14 +7,6 @@
 #include <nlohmann/json.hpp>
 #include "calc.cpp"
 
-#include "calc.h"                   //function files
-#include <iostream>
-#include <string>
-#include <vector>
-#include <cctype>
-#include <stack>
-#include <cmath>
-
 int precedence(const std::string& op) {
     if (op == "+" || op == "-") return 1; //order of operation so + - is lower than * /
     if (op == "*" || op == "/") return 2; 
