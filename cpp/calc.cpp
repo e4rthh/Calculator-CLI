@@ -28,9 +28,11 @@ std::vector<std::string> tokenize(const std::string& expr) { //function stdvecto
 
     for (size_t i = 0; i < expr.size(); ) {  //loop for charecter in expr (aka string)
         char c = expr[i];  //changed to this because we can now check in the strings instead of by letters like sqrt(4) wil now be [sqrt(4)] in which we can easily check using to compare string
-        while (i < expr.size() && std::isdigit(expr[i])) {    //check numbers faster
+        if (i < expr.size() && (std:isdigit(static_cast<unsigned char>(expr[i])) || expr[i] == '.')) {
+            while (i < expr.size() && std::isdigit(expr[i])) {    //check numbers faster
              current += expr[i];
                 i++;
+               }
             }
             if (!current.empty()) {   // if a symbol
                 tokens.push_back(current);   //push the current number to the token 
