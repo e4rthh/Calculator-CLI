@@ -10,19 +10,22 @@ int precedence(const std::string &op) {
     return 1; // order of operation so + - is lower than * /
   if (op == "*" || op == "/")
     return 2;
+  if (op == "neg") return 3;
   if (op == "^")
-    return 3;
-  if (op == "sqrt")
     return 4;
+  if (op == "sqrt")
+    return 5;
   return 0;
 }
 
 bool is_operator(const std::string &t) {
   return t == "+" || t == "-" || t == "*" || t == "/" || t == "^" ||
-         t == "sqrt";
+         t == "sqrt" || t == "neg";
 }
 
-bool isltr(const std::string &t) { return t != "^"; }
+bool isltr(const std::string& t) {
+    return t != "^" && t != "neg";
+}
 
 std::vector<std::string>
 tokenize(const std::string
@@ -44,7 +47,22 @@ tokenize(const std::string
               expr[i] == '.')) {
         current += expr[i];
         i++;
-      }
+              }
+    }
+    if (c == '-') {
+        bool unary = tokens.empty();
+
+        if (!tokens.empty()) {
+            std::string prev = tokens.back();
+            if (is_operator(prev) || prev == "(") { 
+                unary = true;
+           }
+        }
+        if (unary) {
+            tokens.push_back("neg");
+            i++;
+            continue;
+        }
     }
     if (!current.empty()) {      // if a symbol
       tokens.push_back(current); // push the current number to the token
@@ -141,6 +159,14 @@ double evaluvation(const std::vector<std::string> &tokens) {
         stack.pop();
         stack.push(std::sqrt(lhs));
         continue;
+      } else {
+        if (t == "neg") {
+            double value = stack.top();
+            stack.pop();
+
+            stack.push(-value);
+            continue;
+        }
       }
       double lhs = stack.top();
       stack.pop(); // left hand side
@@ -161,29 +187,4 @@ double evaluvation(const std::vector<std::string> &tokens) {
     }
   }
   return stack.top(); // return the value
-}
-
-int main() {
-  std::string expr;
-  while (true) {
-    std::getline(std::cin, expr);
-    std::vector<std::string> tokens = tokenize(expr);
-    // std::vector<std::string> shunters = shuting_yard(tokens);
-    // double evals = evaluvation(shunters);
-    for (const auto &ele : tokens) {
-      std::vector<std::string> shunters = shuting_yard(tokens);
-      double evals = evaluvation(shunters);
-      /*for (const auto& ele : tokens) {
-          std::cout << ele << " ";
-      } *///debugging tokens
-      // std::cout << std::endl;
-      std::cout << evals;
-      std::cout << std::endl;
-      // std::cout << evals << '\n';
-      /*for (const auto& ele : shunters) {
-          std::cout << ele << " ";
-      } */                            //use for debugging shuters                 s
-    }
-  }
-  return 0;
 }

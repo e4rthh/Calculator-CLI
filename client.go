@@ -153,7 +153,7 @@ func main() {
 
 	defer client.Close() //makes sure the C++ calculator is closed when the Go program finishes.
 
-	result, err := client.Eval("2+2.54") //sends a test expression to C++ through JSON RPC and waits for the calculated result.
+	result, err := client.Eval("-2+2.54") //sends a test expression to C++ through JSON RPC and waits for the calculated result.
 	if err != nil { //checks if the calculation or communication failed.
 		fmt.Println(err) //prints the error returned from the RPC client.
 		os.Exit(1) //stops the program because the RPC test failed.
